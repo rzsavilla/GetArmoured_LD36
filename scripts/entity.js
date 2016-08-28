@@ -104,11 +104,13 @@ function Entity() {
         this.updateMove(dt);
     }
 }
+
 var spriteSheet = new Image();
 spriteSheet.width = 124;
 spriteSheet.height = 94;
 spriteSheet.src = "../assets/spritesheet.png";
 
+/*--------------Player Animations----------------------*/
 var animIdleRight = new Animation(0,spriteSheet);
 animIdleRight.addFrame(0,0,14,46);
 var animRight = new Animation(0.08,spriteSheet);
@@ -120,7 +122,6 @@ animRight.addFrame(96,0,14,46);
 animRight.addFrame(110,0,14,46);
 var animJumpR = new Animation(0,spriteSheet);
 animJumpR.addFrame(14,0,16,46);
-
 var animIdleLeft = new Animation(0,spriteSheet);
 animIdleLeft.addFrame(0,46,14,46);
 var animLeft = new Animation(0.08,spriteSheet);
@@ -132,6 +133,23 @@ animLeft.addFrame(96,46,14,46);
 animLeft.addFrame(110,46,14,46);
 var animJumpL = new Animation(0,spriteSheet);
 animJumpL.addFrame(14,46,18,46);
+var armourImage = new Image();
+armourImage.src = "../assets/armour.png";
+var animRightIdleFull = new Animation(0,armourImage);
+animRightIdleFull.addFrame(0,0,16,45);
+
+var animRightFullJump = new Animation(0,armourImage);
+animRightFullJump.addFrame(16,0,22,45);
+
+var animRightFull = new Animation(1,armourImage);
+animRightFull.addFrame(38,0,16,45);
+animRightFull.addFrame(54,0,20,45);
+animRightFull.addFrame(74,0,17,45);
+animRightFull.addFrame(91,0,16,45);
+animRightFull.addFrame(107,0,16,45);
+animRightFull.addFrame(123,0,16,45);
+
+/*------------------------------------------------------*/
 
 Player.prototype= new Entity();
 Player.prototype.constructor=Player;
@@ -184,8 +202,8 @@ function Player() {
         }
         else if (dKey) {
             if (!this.isJumping()) {
-                if (this.getAnimation() != animRight) {
-                    this.setAnimation(animRight);
+                if (this.getAnimation() != animRightFull) {
+                    this.setAnimation(animRightFull);
                 }
             }
             this.moveRight();
@@ -199,8 +217,8 @@ function Player() {
                     this.setAnimation(animJumpL);
                 }
             } else {
-                if (this.getAnimation() != animJumpR) {
-                    this.setAnimation(animJumpR);
+                if (this.getAnimation() != animRightFullJump) {
+                    this.setAnimation(animRightFullJump);
                 }
             }
         }
@@ -212,8 +230,8 @@ function Player() {
                 }
             }
             else if (this.isFacing() == "right") {
-                if (this.getAnimation() != animIdleRight) {
-                    this.setAnimation(animIdleRight);
+                if (this.getAnimation() != animRightIdleFull) {
+                    this.setAnimation(animRightIdleFull);
                 }
             }
         }
