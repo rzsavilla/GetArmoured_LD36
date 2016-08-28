@@ -7,6 +7,7 @@ function setMap(t,map) {
     map.height = t["height"];
     map.tilewidth = t["tilewidth"];
     map.tileheight = t["tileheight"];
+    map.size = new Vector2D(map.width * map.tilewidth,map.height * map.tileheight);
 
     //Load Layers
     for (var i = 0; i < t["layers"].length; i++) {
@@ -64,7 +65,10 @@ function Layer() {
 
     this.draw = function(c) {
         for (var i = 0; i < this.tiles.length; i++) {
-            this.tiles[i].draw(c)
+            var pos = this.tiles[i].getPos();
+            if (pos.x >= view.getBX().x && pos.x <= view.getBX().y) {
+                this.tiles[i].draw(c);
+            }
         }
     }
 }
@@ -75,6 +79,7 @@ function Map() {
     this.tilewidth;
     this.tileheight;
     this.layers = [];
+    this.size = new Vector2D(0,0);
 
     this.draw = function(c) {
         for (var i = 0;i <this.layers.length ; i++) {

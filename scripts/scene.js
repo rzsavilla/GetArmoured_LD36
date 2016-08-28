@@ -32,11 +32,13 @@ function platformCollision(entity,platform) {
  * @constructor
  */
 function Scene() {
-    var player = new Player();
+    var player = new Player(0,0);
     var platforms;
     var map = new Map();
-
-    //---------------------------------
+    view = new View();
+    view.bounds.x = canvas.width / 2;
+    view.bounds.y = canvas.height / 2;
+    //---------------test------------------
     var shieldSprite = new Image();
     shieldSprite.src = "../assets/shield.png";
     shieldSprite.width = 120;
@@ -51,7 +53,7 @@ function Scene() {
     this.initialize = function() {
         loadLevel("../levels/test.json",map);
 
-        player = new Player();
+        player = new Player(100,600);
         platforms = [];
         if (map.layers.length > 0) {
             platforms = map.layers[0].tiles;
@@ -73,45 +75,46 @@ function Scene() {
             platformCollision(player,platforms[i]);
         }
 
-        /*
-        for (var i = 0; i < platforms.length; i++) {
-            if (player.bbBot.collision(platforms[i].bb)) {
-                //player.setPos(player.getPos().x,player.getPos().y-0.01);
-                player.applyForce(0, -player.getVelocity().y * player.getMass() -1);
-                //player.setPos(player.getPos().x,platforms[i].getPos().y - player.getOrigin().y + 3);
-                if (!player.isJumping()) {
-                    player.onGround = true;
-                }
-            }
-            if (player.bbTop.collision(platforms[i].bb)) {
-                player.setPos(player.getPos().x,player.getPos().y+1);
-                player.applyForce(0,Math.abs(player.getVelocity().y));
-            }
-            if (player.bbLeft.collision(platforms[i].bb)) {
-                player.setPos(player.getPos().x + 1,player.getPos().y);
-                player.applyForce(Math.abs(player.getVelocity().x) * player.getMass(),0);
-            }
-            else if (player.bbRight.collision(platforms[i].bb)) {
-                player.setPos(player.getPos().x - 1,player.getPos().y);
-                player.applyForce(-(Math.abs(player.getVelocity().x) * player.getMass()),0);
-            }
-        }
-        */
         //------------Collision------------------//
 
         /*---------------Key Press-----------*/
         player.update(dt);
+
+        //view.setPos(-player.getPos().x + view.bounds.x / 2,-player.getPos().y + view.getBounds().y /2);
     }
     /**
      * Render Scene
      * @param c
      */
     this.draw = function(c) {
-        for (var i = 0; i < platforms.length; i++) {
-            platforms[i].draw(c);
+        c.save();
+        view.x = player.getPos().x - view.bounds.x;
+        view.y = player.getPos().y - view.bounds.y;
+
+        console.log(view.bounds.x);
+        if (view.x < 0) {
+            view.x = 0;
+        } else if (view.x + view.bounds.x - 96 > map.size.x - view.bounds.x) {
+            view.x = map.size.x - view.bounds.x * 2 + 96;
         }
-        map.draw(c);
+        if (view.y < 0) {
+            view.y = 0;
+        } else if (view.y + view.bounds.y > map.size.y - view.bounds.y) {
+            view.y = map.size.y - view.bounds.y * 2;
+        }
+        c.translate(-view.x,-view.y)
+
+        //console.log(view.x);
+
+        for (var i = 0; i < platforms.length; i++) {
+            //platforms[i].draw(c);
+        }
+
+        if (map.layers.length > 0) {
+            map.draw(c);
+        }
         player.draw(c);
         shield.draw(c);
+        c.restore();
     }
 }

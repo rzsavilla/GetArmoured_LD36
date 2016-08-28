@@ -153,11 +153,11 @@ animRightFull.addFrame(123,0,16,45);
 
 Player.prototype= new Entity();
 Player.prototype.constructor=Player;
-function Player() {
+function Player(x,y) {
     Entity.call(this);
 
-    this.setPos(50,150);
-    this.setSpeed(1500);
+    this.setPos(x,y);
+    this.setSpeed(2000);
     this.setMass(50);
     this.setFrictionX(15);
     this.setJumpTick(10);
