@@ -142,45 +142,6 @@ function loadPlayerAnimations() {
     playerAnim.push(anim);
 }
 loadPlayerAnimations();
-
-var animIdleRight = new Animation(0,spriteSheet);
-animIdleRight.addFrame(0,0,14,46);
-var animRight = new Animation(0.08,spriteSheet);
-animRight.addFrame(32,0,14,46);
-animRight.addFrame(46,0,20,46);
-animRight.addFrame(66,0,16,46);
-animRight.addFrame(82,0,14,46);
-animRight.addFrame(96,0,14,46);
-animRight.addFrame(110,0,14,46);
-var animJumpR = new Animation(0,spriteSheet);
-animJumpR.addFrame(14,0,16,46);
-
-var animIdleLeft = new Animation(0,spriteSheet);
-animIdleLeft.addFrame(0,46,14,46);
-var animLeft = new Animation(0.08,spriteSheet);
-animLeft.addFrame(32,46,14,46);
-animLeft.addFrame(46,46,20,46);
-animLeft.addFrame(66,46,16,46);
-animLeft.addFrame(82,46,14,46);
-animLeft.addFrame(96,46,14,46);
-animLeft.addFrame(110,46,14,46);
-var animJumpL = new Animation(0,spriteSheet);
-animJumpL.addFrame(14,46,18,46);
-var armourImage = new Image();
-armourImage.src = "../assets/armour.png";
-var animRightIdleFull = new Animation(0,armourImage);
-animRightIdleFull.addFrame(0,0,16,45);
-
-var animRightFullJump = new Animation(0,armourImage);
-animRightFullJump.addFrame(16,0,22,45);
-
-var animRightFull = new Animation(0.08,armourImage);
-animRightFull.addFrame(38,0,16,45);
-animRightFull.addFrame(54,0,20,45);
-animRightFull.addFrame(74,0,17,45);
-animRightFull.addFrame(91,0,16,45);
-animRightFull.addFrame(107,0,16,45);
-animRightFull.addFrame(123,0,16,45);
 /*-----------------------------------------------------*/
 
 /*--------------------Object Animations----------------*/

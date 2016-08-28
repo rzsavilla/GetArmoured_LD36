@@ -20,7 +20,7 @@ function Player(x,y) {
     this.bbTop = new AABB();
     this.bbBot = new AABB();
 
-    this.setAnimation(animRight); //Starting animation
+    this.setAnimation(playerAnim[0]); //Starting animation
 
     this.updateBB = function() {
         var extent = this.getFrameSize().divide(2,2);
@@ -95,6 +95,5 @@ function Player(x,y) {
                 }
             }
         }
-        console.log(j);
     }
 }
