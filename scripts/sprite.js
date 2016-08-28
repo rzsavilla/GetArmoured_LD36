@@ -90,10 +90,10 @@ function Animation(speed,spriteSheet) {
         for (var i = 0; i < numFrames; i++) {
             if (pos.x >= this.spriteSheet.width) {
                 pos.x = 0;
-                pos.y +=pos.y;
+                pos.y += frameHeight;
             }
-            var top = new Vector2D(pos.x,pos.y);
-            this.frames.push(new Frame(top,new Vector2D(frameWidth,frameHeight)));
+            var top = new Vector2D(pos.x, pos.y);
+            this.frames.push(new Frame(top, new Vector2D(frameWidth, frameHeight)));
             //next frame
             pos.x += frameWidth;
         }
@@ -207,11 +207,11 @@ function AnimatedSprite() {
             this.getPos().y - this.getOrigin().y,
             frame.size.x,frame.size.y
         )
-        c.restore();
         //this.bb.draw(c);        //Draw box
         //this.bbLeft.draw(c);
         //this.bbRight.draw(c);
         //this.bbTop.draw(c);
-        //this.bbBot.draw(c);
+        //his.bbBot.draw(c);
+        c.restore();
     }
 }

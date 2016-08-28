@@ -26,7 +26,7 @@ function update(delta) {
 function render() {
     //Clear Canvas
     ctx.save();
-    ctx.fillStyle = "black";
+    ctx.fillStyle = "#ccf3ff";
     ctx.fillRect(0,0,canvas.width,canvas.height);
     scene.draw(ctx);
     ctx.restore();

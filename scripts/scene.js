@@ -2,44 +2,78 @@
  * Created by rzsavilla on 27/08/2016.
  */
 
+function platformCollision(entity,platform) {
+    if (entity.bbBot.collision(platform.bb)) {
+        //entity.setPos(entity.getPos().x,entity.getPos().y-0.01);
+        entity.applyForce(0, -entity.getVelocity().y * entity.getMass() -1);
+        //entity.setPos(entity.getPos().x,platform[i].getPos().y - entity.getOrigin().y + 3);
+        if (!entity.isJumping()) {
+            entity.onGround = true;
+        }
+    }
+    if (entity.bbTop.collision(platform.bb)) {
+        entity.setPos(entity.getPos().x,entity.getPos().y+1);
+        entity.applyForce(0,Math.abs(entity.getVelocity().y));
+    }
+    if (platform.type != "floating") {
+        if (entity.bbLeft.collision(platform.bb)) {
+            entity.setPos(entity.getPos().x + 1, entity.getPos().y);
+            entity.applyForce(Math.abs(entity.getVelocity().x) * entity.getMass(), 0);
+        }
+        else if (entity.bbRight.collision(platform.bb)) {
+            entity.setPos(entity.getPos().x - 1, entity.getPos().y);
+            entity.applyForce(-(Math.abs(entity.getVelocity().x) * entity.getMass()), 0);
+        }
+    }
+}
+
 /**
  * Scene
  * @constructor
  */
 function Scene() {
     var player = new Player();
-    var platforms = [];
+    var platforms;
+    var map = new Map();
+
+    //---------------------------------
+    var shieldSprite = new Image();
+    shieldSprite.src = "../assets/shield.png";
+    shieldSprite.width = 120;
+    shieldSprite.height = 30;
+    var shield = new Entity();
+    animShield = new Animation(0.1,shieldSprite);
+    animShield.set(4,0,0,30,30);
+    shield.setAnimation(animShield);
+    shield.setPos(100,80);
+    //-----------------------------------
 
     this.initialize = function() {
+        loadLevel("../levels/test.json",map);
+
         player = new Player();
         platforms = [];
-
-        player.setPos(50,150);
-        player.setSpeed(500);
-        player.setMass(20);
-        player.setFrictionX(15);
-
-        for (var i = 0; i < 20; i++) {
-            platforms.push(new Platform(0,i*32,200));
+        if (map.layers.length > 0) {
+            platforms = map.layers[0].tiles;
         }
-        platforms.push(new Platform(0,200,100));
-        platforms.push(new Platform(0,100,150));
-        platforms.push(new Platform(0,0,150));
-        platforms.push(new Platform(0,0,100));
-
-        platforms.push(new Platform(0,450,100));
-        platforms.push(new Platform(0,450,150));
-
     }
     /**
      * Update scene
      * @param {number} dt Delta time (h)
      */
     this.update = function(dt) {
+        if (map.layers.length > 0) {
+            platforms = map.layers[0].tiles;
+        }
+
         var gravity = 20.0;
         player.applyForce(0,gravity * player.getMass())
 
+        for (var i = 0; i < platforms.length; i++) {
+            platformCollision(player,platforms[i]);
+        }
 
+        /*
         for (var i = 0; i < platforms.length; i++) {
             if (player.bbBot.collision(platforms[i].bb)) {
                 //player.setPos(player.getPos().x,player.getPos().y-0.01);
@@ -51,7 +85,7 @@ function Scene() {
             }
             if (player.bbTop.collision(platforms[i].bb)) {
                 player.setPos(player.getPos().x,player.getPos().y+1);
-                player.applyForce(0,Math.abs(player.getVelocity().y) * player.getMass());
+                player.applyForce(0,Math.abs(player.getVelocity().y));
             }
             if (player.bbLeft.collision(platforms[i].bb)) {
                 player.setPos(player.getPos().x + 1,player.getPos().y);
@@ -62,16 +96,11 @@ function Scene() {
                 player.applyForce(-(Math.abs(player.getVelocity().x) * player.getMass()),0);
             }
         }
-
-        if (player.getPos().y > 300) {
-            player.applyForce(0, -player.getVelocity().y);
-            player.setPos(player.getPos().x,300);
-        }
+        */
         //------------Collision------------------//
 
         /*---------------Key Press-----------*/
         player.update(dt);
-
     }
     /**
      * Render Scene
@@ -81,7 +110,8 @@ function Scene() {
         for (var i = 0; i < platforms.length; i++) {
             platforms[i].draw(c);
         }
-
+        map.draw(c);
         player.draw(c);
+        shield.draw(c);
     }
 }

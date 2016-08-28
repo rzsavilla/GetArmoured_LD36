@@ -7,18 +7,25 @@ Entity.prototype.constructor=Entity;
 function Entity() {
     AnimatedSprite.call(this); //Super
     var restitution = 0;
-    var jumpForce = 1200;
+    var jumpForce = 700;
     var bJumping = false;
     var jumpTick = 20;
     var jumpCount = 0;
     var facing = "right";
     var moving = false;
-    var onGround = true;
     this.onGround = false;
+
+    this.setJumpForce = function(newForce) {
+        jumpForce = newForce;
+    }
+    this.setJumpTick = function(tick) {
+        jumpTick = tick;
+    }
+
     this.isJumping = function() { return bJumping;}
     this.isMoving = function() { return moving; }
-    this.onGround = function() { return onGround; }
     this.isFacing = function() { return facing; }
+    this.onFloor = function() { return this.onGround; }
 
     this.moveLeft = function() {
         facing = "left";
@@ -82,9 +89,8 @@ function Entity() {
 
     this.updateEntity = function (dt) {
         var frame = this.getAnimation().frames[this.getCurrFrame()]
-        this.setOrigin(frame.size.x / 2, frame.size.y / 2); //Update origin based on frame size (center,bottom)
         if (bJumping){
-            this.applyForce(0,-jumpForce);
+            this.applyForce(0,-(jumpForce / jumpTick) * this.getMass());
             jumpCount++;
             if (jumpCount >= jumpTick) {
                 bJumping = false;
@@ -98,48 +104,60 @@ function Entity() {
         this.updateMove(dt);
     }
 }
+var spriteSheet = new Image();
+spriteSheet.width = 124;
+spriteSheet.height = 94;
+spriteSheet.src = "../assets/spritesheet.png";
 
-var playerSheet = new Image();
-playerSheet.width = 450;
-playerSheet.height = 162;
-playerSheet.src= "../assets/spriteSheet.png"
+var animIdleRight = new Animation(0,spriteSheet);
+animIdleRight.addFrame(0,0,14,46);
+var animRight = new Animation(0.08,spriteSheet);
+animRight.addFrame(32,0,14,46);
+animRight.addFrame(46,0,20,46);
+animRight.addFrame(66,0,16,46);
+animRight.addFrame(82,0,14,46);
+animRight.addFrame(96,0,14,46);
+animRight.addFrame(110,0,14,46);
+var animJumpR = new Animation(0,spriteSheet);
+animJumpR.addFrame(14,0,16,46);
 
-var animIdleRight = new Animation(0,playerSheet);
-animIdleRight.addFrame(0,0,45,54);
-var animIdleLeft = new Animation(0,playerSheet);
-animIdleLeft.addFrame(45,0,45,54);
-var animRight = new Animation(0.08,playerSheet);
-animRight.set(10,0,55,45,54);
-var animLeft = new Animation(0.08,playerSheet);
-animLeft.set(10,0,108,45,54);
+var animIdleLeft = new Animation(0,spriteSheet);
+animIdleLeft.addFrame(0,46,14,46);
+var animLeft = new Animation(0.08,spriteSheet);
+animLeft.addFrame(32,46,14,46);
+animLeft.addFrame(46,46,20,46);
+animLeft.addFrame(66,46,16,46);
+animLeft.addFrame(82,46,14,46);
+animLeft.addFrame(96,46,14,46);
+animLeft.addFrame(110,46,14,46);
+var animJumpL = new Animation(0,spriteSheet);
+animJumpL.addFrame(14,46,18,46);
 
 Player.prototype= new Entity();
 Player.prototype.constructor=Player;
 function Player() {
     Entity.call(this);
 
-    /*-------------------Animation----------------*/
-    //var animIdleRight = new Animation(0,playerSheet);
-    //animIdleRight.addFrame(0,0,45,54);
-    //var animIdleLeft = new Animation(0,playerSheet);
-    //animIdleLeft.addFrame(45,0,45,54);
-    //var animRight = new Animation(0.1,playerSheet);
-    //animRight.set(10,0,55,45,54);
-    //var animLeft = new Animation(0.1,playerSheet);
-    //animLeft.set(10,0,108,45,54);
+    this.setPos(50,150);
+    this.setSpeed(1500);
+    this.setMass(50);
+    this.setFrictionX(15);
+    this.setJumpTick(10);
+    this.setJumpForce(1100);
+
     this.setAnimation(animRight); //Starting animation
 
     this.updateBB = function() {
         var extent = this.getFrameSize().divide(2,2);
         var pos = this.getPos();
         this.bbTop.setSize(extent.x / 1.2,2);
-        this.bbBot.setSize(extent.x / 1.2,2);
+        this.bbBot.setSize(extent.x / 1.2,5);
         this.bbLeft.setSize(2,extent.y);
         this.bbRight.setSize(2,extent.y);
-        this.bbTop.setPos(pos.x, this.getPos().y - extent.y);
-        this.bbBot.setPos(pos.x,this.getPos().y + extent.y)
-        this.bbLeft.setPos(pos.x - extent.x - 1,this.getPos().y);
-        this.bbRight.setPos(pos.x + extent.x, this.getPos().y);
+        this.bbTop.setPos(pos.x, this.getPos().y - extent.y * 2);
+        this.bbBot.setPos(pos.x,this.getPos().y)
+        this.bbLeft.setPos(pos.x - extent.x - 1,this.getPos().y - extent.y);
+        this.bbRight.setPos(pos.x + extent.x, this.getPos().y - extent.y);
         this.bbTop.setOrigin(this.bbTop.getWidth() / 2,this.bbTop.getHeight() / 2);
         this.bbBot.setOrigin(this.bbBot.getWidth() / 2,this.bbBot.getHeight() /  2);
         this.bbLeft.setOrigin(0,this.bbLeft.getHeight() / 2);
@@ -148,23 +166,45 @@ function Player() {
 
     this.update = function(dt) {
         //Update bounding boxes
+        var frame = this.getAnimation().frames[this.getCurrFrame()]
+        this.setOrigin(frame.size.x / 2, frame.size.y); //Update origin based on frame size (center,bottom)
         this.updateBB();
 
         this.updateEntity(dt);
         //------------Key Press Movement and Animation change -------------------------
-        if (aKey) {
-            if (this.getAnimation() != animLeft) { this.setAnimation(animLeft); }
-            this.moveLeft();
-        }
-        else if (dKey) {
-            if (this.getAnimation() != animRight) { this.setAnimation(animRight); }
-            this.moveRight();
-        }
+
         if (spaceKey) {
             this.jump();
         }
+        if (aKey) {
+            if (!this.isJumping()) {
+                if (this.getAnimation() != animLeft) { this.setAnimation(animLeft); }
+            }
+            this.moveLeft();
+        }
+        else if (dKey) {
+            if (!this.isJumping()) {
+                if (this.getAnimation() != animRight) {
+                    this.setAnimation(animRight);
+                }
+            }
+            this.moveRight();
+        }
+
         //Idle
-        if (this.getVelocity().x < 1 && this.getVelocity().x > -1) {
+        //console.log(this.onFloor());
+        if (!this.onFloor()) {
+            if (this.isFacing() == "left") {
+                if (this.getAnimation() != animJumpL) {
+                    this.setAnimation(animJumpL);
+                }
+            } else {
+                if (this.getAnimation() != animJumpR) {
+                    this.setAnimation(animJumpR);
+                }
+            }
+        }
+        else if (this.getVelocity().x < 1 && this.getVelocity().x > -1) {
             //Set Idle animation
             if (this.isFacing() == "left") {
                 if (this.getAnimation() != animIdleLeft) {
