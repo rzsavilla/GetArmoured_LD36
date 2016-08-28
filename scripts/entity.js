@@ -141,7 +141,7 @@ animRightIdleFull.addFrame(0,0,16,45);
 var animRightFullJump = new Animation(0,armourImage);
 animRightFullJump.addFrame(16,0,22,45);
 
-var animRightFull = new Animation(1,armourImage);
+var animRightFull = new Animation(0.08,armourImage);
 animRightFull.addFrame(38,0,16,45);
 animRightFull.addFrame(54,0,20,45);
 animRightFull.addFrame(74,0,17,45);
