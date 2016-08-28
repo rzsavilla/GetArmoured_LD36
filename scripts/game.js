@@ -1,7 +1,6 @@
 /**
  * Created by rzsavilla on 27/08/2016.
  */
-
 //Canvas
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");

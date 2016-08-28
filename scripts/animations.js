@@ -8,6 +8,9 @@ spriteSheet.width = 124;
 spriteSheet.height = 94;
 spriteSheet.src = "../assets/spritesheet.png";
 
+var blobImage = new Image();
+blobImage.src = "../assets/blob.png";
+
 /*--------------------------------------------*/
 
 /*--------------Player Animations----------------------*/
@@ -144,10 +147,15 @@ function loadPlayerAnimations() {
 loadPlayerAnimations();
 /*-----------------------------------------------------*/
 
+var enemyAnim = [];
+function loadEnemyAnim() {
+
+}
+
 /*--------------------Object Animations----------------*/
 /////////Shield Pick UP/////////
 var shieldImage = new Image;
 shieldImage.src = "../assets/shield.png"
-var shieldAnim = new Animation(0.1,shieldImage);
+var shieldAnim = new Animation(0.18,shieldImage);
 shieldAnim.set(4,0,0,30,30);
 /*-----------------------------------------------------*/

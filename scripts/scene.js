@@ -33,47 +33,23 @@ function platformCollision(entity,platform) {
  */
 function Scene() {
     var player = new Player(0,0);
-    var platforms;
     var map = new Map();
     view = new View();
     view.bounds.x = canvas.width / 2;
     view.bounds.y = canvas.height / 2;
     //---------------test------------------
 
-    var shield = new ShieldPickUp(200,500);
     //-----------------------------------
 
     this.initialize = function() {
         loadLevel("../levels/test.json",map);
-
-        player = new Player(100,600);
-        platforms = [];
-        if (map.layers.length > 0) {
-            platforms = map.layers[0].tiles;
-        }
     }
     /**
      * Update scene
      * @param {number} dt Delta time (h)
      */
     this.update = function(dt) {
-        if (map.layers.length > 0) {
-            platforms = map.layers[0].tiles;
-        }
-
-        var gravity = 20.0;
-        player.applyForce(0,gravity * player.getMass())
-
-        for (var i = 0; i < platforms.length; i++) {
-            platformCollision(player,platforms[i]);
-        }
-
-        //------------Collision------------------//
-
-        /*---------------Key Press-----------*/
-        player.update(dt);
-
-        //view.setPos(-player.getPos().x + view.bounds.x / 2,-player.getPos().y + view.getBounds().y /2);
+        map.update(dt);
     }
     /**
      * Render Scene
@@ -81,8 +57,8 @@ function Scene() {
      */
     this.draw = function(c) {
         c.save();
-        view.x = player.getPos().x - view.bounds.x;
-        view.y = player.getPos().y - view.bounds.y;
+        view.x = map.player.getPos().x - view.bounds.x;
+        view.y = map.player.getPos().y - view.bounds.y;
         if (view.x < 0) {
             view.x = 0;
         } else if (view.x + view.bounds.x - 96 > map.size.x - view.bounds.x) {
@@ -95,17 +71,10 @@ function Scene() {
         }
         c.translate(-view.x,-view.y)
 
-        //console.log(view.x);
-
-        for (var i = 0; i < platforms.length; i++) {
-            //platforms[i].draw(c);
-        }
-
         if (map.layers.length > 0) {
             map.draw(c);
         }
         player.draw(c);
-        shield.draw(c);
         c.restore();
     }
 }
