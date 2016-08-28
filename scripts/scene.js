@@ -39,15 +39,8 @@ function Scene() {
     view.bounds.x = canvas.width / 2;
     view.bounds.y = canvas.height / 2;
     //---------------test------------------
-    var shieldSprite = new Image();
-    shieldSprite.src = "../assets/shield.png";
-    shieldSprite.width = 120;
-    shieldSprite.height = 30;
-    var shield = new Entity();
-    animShield = new Animation(0.1,shieldSprite);
-    animShield.set(4,0,0,30,30);
-    shield.setAnimation(animShield);
-    shield.setPos(100,80);
+
+    var shield = new ShieldPickUp(200,500);
     //-----------------------------------
 
     this.initialize = function() {
@@ -90,8 +83,6 @@ function Scene() {
         c.save();
         view.x = player.getPos().x - view.bounds.x;
         view.y = player.getPos().y - view.bounds.y;
-
-        console.log(view.bounds.x);
         if (view.x < 0) {
             view.x = 0;
         } else if (view.x + view.bounds.x - 96 > map.size.x - view.bounds.x) {

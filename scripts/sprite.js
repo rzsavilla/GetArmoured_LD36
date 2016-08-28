@@ -132,11 +132,6 @@ function AnimatedSprite() {
     this.bb = new AABB();
     this.bb.setColour("white");
 
-    this.bbLeft = new AABB();
-    this.bbRight = new AABB();
-    this.bbTop = new AABB();
-    this.bbBot = new AABB();
-
     /**
      *
      * @param {Animation} newAnimation
