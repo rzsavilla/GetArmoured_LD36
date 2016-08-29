@@ -35,8 +35,9 @@ function render() {
  * The Game Loop
  */
 function loop(){
-    var dt = timer.getElapsed() / 1000.0;   //delta time in seconds (variable)
-    dt = 1/60;
+    var dt;
+    //dt = timer.getElapsed() / 1000.0;   //delta time in seconds (variable)
+    dt = 1/60; //Fixed
     update(dt);
     render();
     window.requestAnimationFrame(loop);
@@ -46,4 +47,14 @@ function loop(){
 /**
  * Start Game Loop
  */
+var i = 0;
+/*
+window.onload = function () {
+    if(!window.location.hash) {
+        window.location = window.location + '#loaded';
+        window.location.reload();
+    }
+}
+*/
+
 window.requestAnimationFrame(loop);

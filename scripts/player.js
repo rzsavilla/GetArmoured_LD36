@@ -6,46 +6,55 @@ Player.prototype= new Entity();
 Player.prototype.constructor=Player;
 function Player(x,y) {
     Entity.call(this);
-    this.armourLevel = 3;
+    this.armourLevel = 0;
+    this.collidable = true;
+    this.objectType = "player";
 
     this.setPos(x,y);
     this.setSpeed(2000);
     this.setMass(50);
     this.setFrictionX(15);
-    this.setJumpTick(10);
-    this.setJumpForce(1100);
+    //this.setJumpTick(10);
+    this.setJumpForce(1000);
 
-    this.bbLeft = new AABB();
-    this.bbRight = new AABB();
-    this.bbTop = new AABB();
-    this.bbBot = new AABB();
+    var x = 14;
+    var y = 46
+    this.bb.setSize(x,y);
+    this.bb.setOrigin(x / 2,y );
+    this.bb.setRot(this.getRot());
+    this.bb.setScale(this.getScale().x,this.getScale().y);
+
+    this.bbSet = false;
 
     this.setAnimation(playerAnim[0]); //Starting animation
 
     this.updateBB = function() {
-        var extent = this.getFrameSize().divide(2,2);
         var pos = this.getPos();
-        this.bbTop.setSize(extent.x / 1.2,2);
-        this.bbBot.setSize(extent.x / 1.2,5);
-        this.bbLeft.setSize(2,extent.y);
-        this.bbRight.setSize(2,extent.y);
-        this.bbTop.setPos(pos.x, this.getPos().y - extent.y * 2);
-        this.bbBot.setPos(pos.x,this.getPos().y)
-        this.bbLeft.setPos(pos.x - extent.x - 1,this.getPos().y - extent.y);
-        this.bbRight.setPos(pos.x + extent.x, this.getPos().y - extent.y);
-        this.bbTop.setOrigin(this.bbTop.getWidth() / 2,this.bbTop.getHeight() / 2);
-        this.bbBot.setOrigin(this.bbBot.getWidth() / 2,this.bbBot.getHeight() /  2);
+        this.bbTop.setPos(pos.x, this.getPos().y - 50);
+        this.bbBot.setPos(pos.x,this.getPos().y - 2)
+        this.bbLeft.setPos(pos.x - 2 - 5,this.getPos().y - 25);
+        this.bbRight.setPos(pos.x + 5, this.getPos().y - 25);
+
         this.bbLeft.setOrigin(0,this.bbLeft.getHeight() / 2);
         this.bbRight.setOrigin(0,this.bbRight.getHeight() / 2);
     }
 
     this.update = function(dt) {
+        this.bb.setPos(this.getPos().x,this.getPos().y);
+        if (!this.bbSet) {
+            this.bbTop.setSize(5,2);
+            this.bbBot.setSize(5,2);
+            this.bbLeft.setSize(2,35);
+            this.bbRight.setSize(2,35);
+            this.bbTop.setOrigin(this.bbTop.getWidth() / 2,this.bbTop.getHeight() / 2);
+            this.bbBot.setOrigin(this.bbBot.getWidth() / 2,this.bbBot.getHeight() /  2);
+            this.bbSet = true;
+        }
         //Update bounding boxes
         var frame = this.getAnimation().frames[this.getCurrFrame()]
         this.setOrigin(frame.size.x / 2, frame.size.y); //Update origin based on frame size (center,bottom)
-        this.updateBB();
-
         this.updateEntity(dt);
+        this.updateBB();
         //------------Key Press Movement and Animation change -------------------------
         var j = 0;
         if (this.armourLevel == 1) { j = 6; }
@@ -54,6 +63,7 @@ function Player(x,y) {
 
         if (spaceKey) {
             this.jump();
+            spaceKey = false;
         }
         if (aKey) {
             if (!this.isJumping()) { //Set Animation

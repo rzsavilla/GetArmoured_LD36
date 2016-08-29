@@ -7,6 +7,10 @@ var sKey = false;
 var aKey = false;
 var dKey = false;
 var spaceKey = false;
+var escKey = false;
+
+var key1 = false;
+var key2 = false
 
 /**
  * Key press event
@@ -19,7 +23,7 @@ document.addEventListener("keydown",
     function(event) {
         var down = true;
         if (event.keyCode == 27) {          //ESC
-
+            escKey = down;
         }
         else if (event.keyCode == 87) {     //W
             wKey = down;
@@ -36,6 +40,12 @@ document.addEventListener("keydown",
         else if (event.keyCode == 32) {     //SPACE
             spaceKey = down;
         }
+        else if (event.keyCode == 49) {     //1
+            key1 = down;
+        }
+        else if (event.keyCode == 50) {     //2
+            key2 = down;
+        }
     }
 );
 
@@ -46,7 +56,7 @@ document.addEventListener("keyup",
     function(event) {
         var down = false;
         if (event.keyCode == 27) {          //ESC
-
+            escKey = down;
         }
         else if (event.keyCode == 87) {     //W
             wKey = down;
@@ -61,7 +71,13 @@ document.addEventListener("keyup",
             dKey = down;
         }
         else if (event.keyCode == 32) {     //SPACE
-            spaceKey = down
+            spaceKey = down;
+        }
+        else if (event.keyCode == 49) {     //1
+            key1 = down;
+        }
+        else if (event.keyCode == 50) {     //2
+            key2 = down;
         }
     }
 )

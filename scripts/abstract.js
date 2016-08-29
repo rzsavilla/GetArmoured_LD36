@@ -6,12 +6,13 @@
  * Allows object to be transformed
  * @constructor
  */
+
 function Transformable() {
     var pos = new Vector2D(0, 0);
     var origin = new Vector2D(0,0);
     var scale = new Vector2D(1,1);
     var rot = 0;
-
+    this.objectType = "";
     /**
      * Set objects current position
      * @param {number} x

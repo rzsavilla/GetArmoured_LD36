@@ -106,6 +106,8 @@ function Animation(speed,spriteSheet) {
     }
 }
 
+var uniq = 0;
+
 AnimatedSprite.prototype = new Movable();                //Animated Sprite Inherits Sprite
 AnimatedSprite.prototype.constructor=AnimatedSprite;
 /** Animated sprite */
@@ -129,8 +131,18 @@ function AnimatedSprite() {
 
     var playAnimation = true;
 
+    this.bbLeft = new AABB();
+    this.bbRight = new AABB();
+    this.bbTop = new AABB();
+    this.bbBot = new AABB();
+
     this.bb = new AABB();
     this.bb.setColour("white");
+    this.collidable = false;
+
+    this._roId = uniq++;
+
+    this.topHit = false;
 
     /**
      *
@@ -187,7 +199,6 @@ function AnimatedSprite() {
     this.draw = function (c) {
         this.nextFrame(); //Update frame
         var frame = this.getAnimation().frames[this.getCurrFrame()];
-
         //Draw frame
         c.save();
         c.translate(this.getPos().x,this.getPos().y);
@@ -202,11 +213,13 @@ function AnimatedSprite() {
             this.getPos().y - this.getOrigin().y,
             frame.size.x,frame.size.y
         )
-        //this.bb.draw(c);        //Draw box
-        //this.bbLeft.draw(c);
-        //this.bbRight.draw(c);
-        //this.bbTop.draw(c);
-        //his.bbBot.draw(c);
+        if (true) {
+            //this.bb.draw(c);        //Draw box
+            this.bbLeft.draw(c);
+            this.bbRight.draw(c);
+            this.bbTop.draw(c);
+            this.bbBot.draw(c);
+        }
         c.restore();
     }
 }

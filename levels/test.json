@@ -45,6 +45,21 @@
                  "width":0,
                  "x":450,
                  "y":400
+                }, 
+                {
+                 "height":0,
+                 "id":29,
+                 "name":"blob1",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"Blob",
+                 "visible":true,
+                 "width":0,
+                 "x":680,
+                 "y":580
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -53,7 +68,7 @@
          "x":0,
          "y":0
         }],
- "nextobjectid":29,
+ "nextobjectid":38,
  "orientation":"orthogonal",
  "properties":
     {

@@ -1,8 +1,6 @@
 /**
  * Created by rzsavilla on 27/08/2016.
  */
-
-
 //Collision Bounding
 AABB.prototype = new Rectangle();
 AABB.prototype.constructor=AABB;
@@ -14,11 +12,15 @@ AABB.prototype.constructor=AABB;
  * @param {number} height
  * @constructor
  */
+var uniq = 0;
 function AABB(x,y,width,height) {
     Rectangle.call(this);
+    this._roId = uniq++;
     this.setPos(x,y);
     this.setSize(width,height);
-
+    this.getExtents = function () {
+        return new Vector2D(this.getWidth() / 2, this.getHeight() /2);
+    }
     /**
      * Check for collision
      * @param other
@@ -198,7 +200,6 @@ function OBB(x,y,width,height) {
                     if (proj < box2Min) { box2Min = proj; }
                     if (proj > box2Max) { box2Max = proj; }
                 }
-                console.log(i);
                 if (!(box2Min <= box1Max && box2Max >= box1Min)) {
                     //Axis separation found, ignore remaining axis checks
                     return false; //No collision
@@ -303,6 +304,230 @@ function OBB(x,y,width,height) {
                 }
             }
             return true; //All axis intersect, collision has occurred
+        }
+    }
+}
+
+/*
+ https://github.com/kirbysayshi/broad-phase-bng/blob/master/lib/ro.coltech.spatial-grid.js
+ */
+function Grid(cellSize,mapwidth,mapheight) {
+    this.grid = [];
+    var cellSize = cellSize;
+    var x = 0;
+    this.entities = [];
+    var width = mapwidth;
+    var height = mapheight;
+    var cellCount = new Vector2D(0,0);
+    var totalCells = 0;
+
+    this.collisionTests = 0;
+    this.hashChecks = 0;
+    /**
+     *
+     * @param {number} cellSize
+     * @param {number} width Map Pixel Width
+     * @param {number} height Map Pixel Height
+     */
+    this.create = function(cellSize,mapwidth,mapheight) {
+        width = mapwidth;
+        height = mapheight;
+        cellCount.x = mapwidth / cellSize;
+        cellCount.y = mapheight / cellSize;
+        totalCells = cellCount.x * cellCount.y;
+
+        //create empty grid
+        this.grid = [];
+        this.grid.length = cellCount.x;
+        /*
+        for (var i = 0; i < height; i++) {
+            var y = cellSize * i;
+            console.log("y:"+y);
+            for (var j = 0; j < width; j++) {
+                var x = cellSize * j;
+                console.log("x:"+ x);
+            }
+        }
+        */
+    }
+    this.create(cellSize,width,height);
+
+    this.addEntity = function(entity) {
+        this.entities.push(entity);
+    }
+
+    this.removeEntity = function() {
+        this.entities.splice((this.entities.indexOf(this.entities),1))
+    }
+
+    /*
+    this.collPairs = function () {
+        var checked = {},
+            pairs = [],
+            entityA,
+            entityB,
+            hashA,
+            hashB,
+            gridCol,
+            gridCell;
+
+        this.collisionTests = 0;
+        this.hashChecks = 0;
+
+        //for every column in the grid
+        for (var i = 0; i < grid.length; i++) {
+            gridCol = grid[i];
+            //console.log(gridCol.length);
+            //Ignore columns without any cells
+            if (!gridCol) {continue;}
+
+            for (var j = 0; j < gridCol.length; j++) {
+                gridCell = gridCol[j];
+                //Ignore empty cells
+                if (!gridCell) {continue;}
+                for (var k = 0; k < gridCell.length; k++) {
+                    entityA = gridCell[k];
+                    //Every other object in a cell
+                    for (var l = k+1; l < gridCell.length; l++) {
+                        entityB = gridCell[l];
+
+                        //Create unique key to mark pair
+                        //use both combinations to ensure linear time
+                        hashA = entityA._roID + ':' + entityB._roID;
+                        hashB = entityB._roID + ':' + entityA._roID;
+
+                        this.hashChecks += 2;
+
+                        if (!checked[hashA] && !checked[hashB]) {
+                            checked[hashA] = checked[hashB] = true;
+
+                            this.collisionTests += 1;
+
+                            if (entityA.collision(entityB)) {
+                                pairs.push([entityA,entityB]);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return pairs;
+    }
+    */
+
+    this.collPairs = function(){
+
+        var checked = {}
+            ,pairs = []
+            ,entityA
+            ,entityB
+            ,hashA
+            ,hashB
+            ,i
+            ,j
+            ,k
+            ,l
+            ,gridCol
+            ,gridCell
+
+        // reset counts, for debug/comparison purposes
+        this.collisionTests = 0;
+        this.hashChecks = 0;
+
+        // for every column in the grid...
+        for( i = 0; i < this.grid.length; i++ ){
+
+            gridCol = this.grid[i];
+
+            // ignore columns that have no cells
+            if( !gridCol ){ continue; }
+
+            // for every cell within a column of the grid...
+            for( j = 0; j < gridCol.length; j++ ){
+
+                gridCell = gridCol[j];
+
+                // ignore cells that have no objects
+                if( !gridCell ){ continue; }
+
+                // for every object in a cell...
+                for( k = 0; k < gridCell.length; k++ ){
+
+                    entityA = gridCell[k];
+
+                    // for every other object in a cell...
+                    for( l = k+1; l < gridCell.length; l++ ){
+
+                        entityB = gridCell[l];
+
+                        // create a unique key to mark this pair.
+                        // use both combinations to ensure linear time
+                        hashA = entityA._roId + ':' + entityB._roId;
+                        hashB = entityB._roId + ':' + entityA._roId;
+
+                        console.log(checked);
+                        this.hashChecks += 2;
+
+                        if( !checked[hashA] && !checked[hashB] ){
+
+                            // mark this pair has checked
+                            checked[hashA] = checked[hashB] = true;
+
+                            this.collisionTests += 1;
+
+                            if(entityA.collision(entityB)){
+                                pairs.push( [entityA, entityB] );
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return pairs;
+    }
+
+
+    this.update = function() {
+        var minX,
+            minY,
+            maxX,
+            maxY,
+            gridCell,
+            gridCol,
+            cX,
+            cY
+
+
+        var row = [];
+        row.length = cellCount.x
+        //console.log(row);
+
+        for (var i = 0; i < this.entities.length; i++) {
+            var entity;
+            entity = this.entities[i].bb;
+
+            var size = new Vector2D(entity.getWidth(),entity.getHeight());
+            //console.log(size);
+            minX = Math.floor((entity.getPos().x) / cellSize);
+            maxX = Math.floor((entity.getPos().x + size.x) / cellSize);
+            minY = Math.floor((entity.getPos().y) / cellSize);
+            maxY = Math.floor((entity.getPos().y + size.y) / cellSize);
+
+            var cY
+            for (var cX = minX; cX <= maxX; cX++) {
+                if (!this.grid[cX]) { this.grid[cX] = Array(cellCount.y); }
+
+                gridCol = this.grid[cX];
+
+                for (cY = minY; cY <= maxY; cY++) {
+                    if (!gridCol[cY]) {
+                        gridCol[cY] = [];
+                    }
+                    gridCell = gridCol[cY];
+                    gridCell.push(entity);
+                }
+            }
         }
     }
 }

@@ -17,6 +17,7 @@ function Platform(i,x,y) {
     this.bb.setWidth(32);
     this.bb.setHeight(32);
     this.type = "solid";
+    this.collidable = true;
 
     if (i == 1) {
         //Dirt right corner
@@ -43,7 +44,7 @@ function Platform(i,x,y) {
         anim.addFrame(160,0,32,17);
         this.bb.setPos(x,y+2);
         this.bb.setWidth(32);
-        this.bb.setHeight(1);
+        this.bb.setHeight(3);
         this.type = "floating";
     }
     else if (i == 7) {
@@ -51,7 +52,7 @@ function Platform(i,x,y) {
         anim.addFrame(192,0,32,17);
         this.bb.setPos(x,y+1);
         this.bb.setWidth(32);
-        this.bb.setHeight(1);
+        this.bb.setHeight(3);
         this.type = "floating";
     }
     else if (i == 8) {
@@ -59,7 +60,7 @@ function Platform(i,x,y) {
         anim.addFrame(224,0,32,17);
         this.bb.setPos(x,y+1);
         this.bb.setWidth(32);
-        this.bb.setHeight(1);
+        this.bb.setHeight(3);
         this.type = "floating";
     }
     else if (i == 9) {
@@ -73,9 +74,10 @@ function Platform(i,x,y) {
     else if (i == 11) {
         //Dirt
         anim.addFrame(320,0,32,32);
+        this.collidable = false;
     }
     else {
-
+        //Invisible wall
     }
     this.setAnimation(anim);
 }

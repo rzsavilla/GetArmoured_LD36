@@ -2,24 +2,30 @@
  * Created by rzsavilla on 27/08/2016.
  */
 
+var uniq = 0;
+
 Entity.prototype = new AnimatedSprite();
 Entity.prototype.constructor=Entity;
 function Entity() {
     AnimatedSprite.call(this); //Super
     var restitution = 0;
-    var jumpForce = 700;
+    var jumpForce = 500;
     var bJumping = false;
-    var jumpTick = 20;
+    var jumpTick = 10;
     var jumpCount = 0;
     var facing = "right";
     var moving = false;
     this.onGround = false;
+    this._roId = uniq++;
 
     this.setJumpForce = function(newForce) {
         jumpForce = newForce;
     }
     this.setJumpTick = function(tick) {
         jumpTick = tick;
+    }
+    this.setFacing = function(newDirection) {
+        facing = newDirection;
     }
 
     this.isJumping = function() { return bJumping;}
@@ -39,6 +45,7 @@ function Entity() {
     this.moveDown = function () { this.applyForce(0,this.getSpeed()); moving = true; }
     this.jump = function() {
         if (!bJumping) {
+            this.topHit = false;
             if (this.onGround) {
                 bJumping = true;
                 jumpCount = 0;
@@ -87,8 +94,29 @@ function Entity() {
         return false;
     }
 
+    this.updateFrameBB = function() {
+        var extent = this.getFrameSize().divide(2,2);
+        var pos = this.getPos();
+        this.bbTop.setSize(extent.x / 1.2,2);
+        this.bbBot.setSize(extent.x / 1.2,2);
+        this.bbLeft.setSize(2,extent.y);
+        this.bbRight.setSize(2,extent.y);
+        this.bbTop.setPos(pos.x, this.getPos().y - extent.y * 2);
+        this.bbBot.setPos(pos.x,this.getPos().y)
+        this.bbLeft.setPos(pos.x - extent.x - 1,this.getPos().y - extent.y);
+        this.bbRight.setPos(pos.x + extent.x, this.getPos().y - extent.y);
+        this.bbTop.setOrigin(this.bbTop.getWidth() / 2,this.bbTop.getHeight() / 2);
+        this.bbBot.setOrigin(this.bbBot.getWidth() / 2,this.bbBot.getHeight() /  2);
+        this.bbLeft.setOrigin(0,this.bbLeft.getHeight() / 2);
+        this.bbRight.setOrigin(0,this.bbRight.getHeight() / 2);
+        this.bb.setPos(this.getPos().x,this.getPos().y);
+    }
+
     this.updateEntity = function (dt) {
         var frame = this.getAnimation().frames[this.getCurrFrame()]
+        if (this.topHit) {
+            bJumping = false;
+        }
         if (bJumping){
             this.applyForce(0,-(jumpForce / jumpTick) * this.getMass());
             jumpCount++;
@@ -96,11 +124,6 @@ function Entity() {
                 bJumping = false;
             }
         }
-        this.bb.setSize(frame.size.x,frame.size.y);
-        this.bb.setPos(this.getPos().x,this.getPos().y);
-        this.bb.setOrigin(this.getOrigin().x,this.getOrigin().y);
-        this.bb.setRot(this.getRot());
-        this.bb.setScale(this.getScale().x,this.getScale().y);
         this.updateMove(dt);
     }
 }

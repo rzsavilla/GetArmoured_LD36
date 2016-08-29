@@ -31,7 +31,6 @@ function Rectangle(x,y,width,height) {
         size.x = newWidth;
         size.y = newHeight;
     }
-
     /**
      * Set rectangle Width
      * @param {number} newWidth
@@ -43,6 +42,9 @@ function Rectangle(x,y,width,height) {
      */
     this.setHeight = function(newHeight) { size.y = newHeight; }
 
+    this.getSize = function () {
+        return size;
+    }
     /**
      * Return rectangle width
      * @returns {number}

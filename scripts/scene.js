@@ -2,38 +2,20 @@
  * Created by rzsavilla on 27/08/2016.
  */
 
-function platformCollision(entity,platform) {
-    if (entity.bbBot.collision(platform.bb)) {
-        //entity.setPos(entity.getPos().x,entity.getPos().y-0.01);
-        entity.applyForce(0, -entity.getVelocity().y * entity.getMass() -1);
-        //entity.setPos(entity.getPos().x,platform[i].getPos().y - entity.getOrigin().y + 3);
-        if (!entity.isJumping()) {
-            entity.onGround = true;
-        }
-    }
-    if (entity.bbTop.collision(platform.bb)) {
-        entity.setPos(entity.getPos().x,entity.getPos().y+1);
-        entity.applyForce(0,Math.abs(entity.getVelocity().y));
-    }
-    if (platform.type != "floating") {
-        if (entity.bbLeft.collision(platform.bb)) {
-            entity.setPos(entity.getPos().x + 1, entity.getPos().y);
-            entity.applyForce(Math.abs(entity.getVelocity().x) * entity.getMass(), 0);
-        }
-        else if (entity.bbRight.collision(platform.bb)) {
-            entity.setPos(entity.getPos().x - 1, entity.getPos().y);
-            entity.applyForce(-(Math.abs(entity.getVelocity().x) * entity.getMass()), 0);
-        }
-    }
-}
 
 /**
  * Scene
  * @constructor
  */
 function Scene() {
-    var player = new Player(0,0);
     var map = new Map();
+    var loadingScreen = new LoadingScreen();
+    var pauseScreen = new PauseScreen();
+    var level = 1;
+    var paused = false;
+    var gridLoaded = false;
+    var timer = new Timer();
+
     view = new View();
     view.bounds.x = canvas.width / 2;
     view.bounds.y = canvas.height / 2;
@@ -41,40 +23,89 @@ function Scene() {
 
     //-----------------------------------
 
+
     this.initialize = function() {
-        loadLevel("../levels/test.json",map);
+        timer.reset();
+        gridLoaded = false;
+        map = new Map();
+        if (level == 1) {
+            loadLevel("../levels/level2.json", map);
+        }
+        else if (level == 2) {
+            loadLevel("../levels/level1.json", map);
+        }
     }
     /**
      * Update scene
      * @param {number} dt Delta time (h)
      */
     this.update = function(dt) {
-        map.update(dt);
+        if (loaded && timer.getElapsed() / 1000 > 3.0) {
+
+            if (escKey) {
+                if (paused) {
+                    paused = false;
+                } //Pause
+                else {
+                    paused = true;
+                }         //UnPause
+                escKey = false;
+            }
+
+            if (!paused) {
+                if (key1) {
+                    if (level != 1) {
+                        level = 1;
+                        this.initialize();
+                    }
+                } else if (key2) {
+                    if (level != 2) {
+                        level = 2;
+                        this.initialize();
+                    }
+                }
+                map.update(dt);
+            }
+            if (!gridLoaded) {
+                map.detector = new BroadPhase.HashGrid(map.width,map.height,32,32);
+                gridLoaded = true;
+            }
+        }
     }
     /**
      * Render Scene
      * @param c
      */
     this.draw = function(c) {
-        c.save();
-        view.x = map.player.getPos().x - view.bounds.x;
-        view.y = map.player.getPos().y - view.bounds.y;
-        if (view.x < 0) {
-            view.x = 0;
-        } else if (view.x + view.bounds.x - 96 > map.size.x - view.bounds.x) {
-            view.x = map.size.x - view.bounds.x * 2 + 96;
-        }
-        if (view.y < 0) {
-            view.y = 0;
-        } else if (view.y + view.bounds.y > map.size.y - view.bounds.y) {
-            view.y = map.size.y - view.bounds.y * 2;
-        }
-        c.translate(-view.x,-view.y)
+        if (loaded && timer.getElapsed() / 1000 > 3.0) {
+            if (!paused) {
+                c.save();
+                view.x = map.player.getPos().x - view.bounds.x;
+                view.y = map.player.getPos().y - view.bounds.y;
+                if (view.x < 0) {
+                    view.x = 0;
+                } else if (view.x + view.bounds.x - 96 > map.size.x - view.bounds.x) {
+                    view.x = map.size.x - view.bounds.x * 2 + 96;
+                }
+                if (view.y < 0) {
+                    view.y = 0;
+                } else if (view.y + view.bounds.y > map.size.y - view.bounds.y) {
+                    view.y = map.size.y - view.bounds.y * 2;
+                }
+                c.translate(-view.x, -view.y)
 
-        if (map.layers.length > 0) {
-            map.draw(c);
+                if (map.layers.length > 0) {
+                    map.draw(c);
+                }
+                c.restore();
+            }
         }
-        player.draw(c);
-        c.restore();
+        if (!loaded || timer.getElapsed() / 1000 < 2.0) {
+            loadingScreen.draw(c);
+
+        }
+        if (paused) {
+            pauseScreen.draw(c);
+        }
     }
 }

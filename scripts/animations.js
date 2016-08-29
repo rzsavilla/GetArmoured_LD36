@@ -17,11 +17,12 @@ blobImage.src = "../assets/blob.png";
 var playerAnim = [];
 function loadPlayerAnimations() {
     var anim;
+    var speed = 0.05
     //Right - Plain
     anim = new Animation(0,spriteSheet);   //idle
     anim.addFrame(0,0,14,46);
     playerAnim.push(anim);
-    anim = new Animation(0.08,spriteSheet); //Move
+    anim = new Animation(speed,spriteSheet); //Move
     anim.addFrame(32,0,14,46);
     anim.addFrame(47,0,20,46);
     anim.addFrame(67,0,16,46);
@@ -36,7 +37,7 @@ function loadPlayerAnimations() {
     anim = new Animation(0,spriteSheet);   //idle
     anim.addFrame(0,46,14,46);
     playerAnim.push(anim);
-    anim = new Animation(0.08,spriteSheet); //move
+    anim = new Animation(speed,spriteSheet); //move
     anim.addFrame(32,46,14,46);
     anim.addFrame(47,46,20,46);
     anim.addFrame(67,46,16,46);
@@ -52,7 +53,7 @@ function loadPlayerAnimations() {
     anim = new Animation(0,spriteSheet);    //Idle
     anim.addFrame(0,92,15,46);
     playerAnim.push(anim);
-    anim = new Animation(0.08,spriteSheet); //Move
+    anim = new Animation(speed,spriteSheet); //Move
     anim.addFrame(33,92,15,46);
     anim.addFrame(48,92,20,46);
     anim.addFrame(68,92,16,46);
@@ -68,7 +69,7 @@ function loadPlayerAnimations() {
     anim = new Animation(0,spriteSheet);    //Idle
     anim.addFrame(0,138,15,46);
     playerAnim.push(anim);
-    anim = new Animation(0.08,spriteSheet); //Move
+    anim = new Animation(speed,spriteSheet); //Move
     anim.addFrame(33,138,15,46);
     anim.addFrame(48,138,20,46);
     anim.addFrame(68,138,16,46);
@@ -84,7 +85,7 @@ function loadPlayerAnimations() {
     anim = new Animation(0,spriteSheet);    //Idle
     anim.addFrame(0,184,15,46);
     playerAnim.push(anim);
-    anim = new Animation(0.08,spriteSheet); //Move
+    anim = new Animation(speed,spriteSheet); //Move
     anim.addFrame(33,184,15,46);
     anim.addFrame(48,184,20,46);
     anim.addFrame(68,184,16,46);
@@ -100,7 +101,7 @@ function loadPlayerAnimations() {
     anim = new Animation(0,spriteSheet);    //Idle
     anim.addFrame(0,230,15,46);
     playerAnim.push(anim);
-    anim = new Animation(0.08,spriteSheet); //Move
+    anim = new Animation(speed,spriteSheet); //Move
     anim.addFrame(33,230,15,46);
     anim.addFrame(48,230,20,46);
     anim.addFrame(68,230,16,46);
@@ -116,7 +117,7 @@ function loadPlayerAnimations() {
     anim = new Animation(0,spriteSheet);    //Idle
     anim.addFrame(0,276,16,45);
     playerAnim.push(anim);
-    anim = new Animation(0.08,spriteSheet); //Move
+    anim = new Animation(speed,spriteSheet); //Move
     anim.addFrame(38,276,16,45);
     anim.addFrame(54,276,20,45);
     anim.addFrame(74,276,17,45);
@@ -132,7 +133,7 @@ function loadPlayerAnimations() {
     anim = new Animation(0,spriteSheet);    //Idle
     anim.addFrame(0,321,16,45);
     playerAnim.push(anim);
-    anim = new Animation(0.08,spriteSheet); //Move
+    anim = new Animation(speed,spriteSheet); //Move
     anim.addFrame(38,321,16,45);
     anim.addFrame(54,321,20,45);
     anim.addFrame(74,321,17,45);
@@ -147,10 +148,25 @@ function loadPlayerAnimations() {
 loadPlayerAnimations();
 /*-----------------------------------------------------*/
 
-var enemyAnim = [];
-function loadEnemyAnim() {
-
+/*---------------Enemy-----------------------------*/
+var blobAnim = [];
+function loadBlobAnim() {
+    var anim;
+    var speed = 0.15;
+    anim = new Animation(speed,blobImage);  //Move Right 0
+    anim.set(6,0,0,15,11);
+    blobAnim.push(anim);
+    anim = new Animation(speed,blobImage);  //Left
+    anim.set(6,0,11,15,11);
+    blobAnim.push(anim);
+    anim = new Animation(speed,blobImage);  //J Right
+    anim.set(7,0,22,15,18);
+    blobAnim.push(anim);
+    anim = new Animation(speed,blobImage);  //J Left
+    anim.set(7,0,40,15,18);
+    blobAnim.push(anim);
 }
+loadBlobAnim();
 
 /*--------------------Object Animations----------------*/
 /////////Shield Pick UP/////////
