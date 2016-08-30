@@ -4,8 +4,8 @@
 
 /*---------------Load IMAGES-------------------*/
 var spriteSheet = new Image();
-spriteSheet.width = 124;
-spriteSheet.height = 94;
+spriteSheet.width = 192;
+spriteSheet.height = 796;
 spriteSheet.src = "../assets/spritesheet.png";
 
 var blobImage = new Image();
@@ -17,7 +17,7 @@ blobImage.src = "../assets/blob.png";
 var playerAnim = [];
 function loadPlayerAnimations() {
     var anim;
-    var speed = 0.05
+    var speed = 0.09
     //Right - Plain
     anim = new Animation(0,spriteSheet);   //idle
     anim.addFrame(0,0,14,46);
@@ -144,6 +144,40 @@ function loadPlayerAnimations() {
     anim = new Animation(0,spriteSheet);   //Jump
     anim.addFrame(16,321,22,45);
     playerAnim.push(anim);
+
+
+    //24
+    //Left Attack 1
+    anim = new Animation(0.1, spriteSheet);
+    anim.set(8,0,366,14,46);
+    playerAnim.push(anim);
+    //25
+    //Right Attack 1
+    anim = new Animation(0.1, spriteSheet);
+    anim.set(8,0,412,14,46);
+    playerAnim.push(anim);
+    //26
+    //Left Attack 2
+    anim = new Animation(0.1, spriteSheet);
+    anim.set(8,0,458,15,46);
+    playerAnim.push(anim);
+    //27
+    //Right Attack 2
+    anim = new Animation(0.1, spriteSheet);
+    anim.set(8,0,490,15,46);
+    playerAnim.push(anim);
+    //28
+    //Left Attack 3
+    anim = new Animation(0.1, spriteSheet);
+    anim.set(8,0,536,16,45);
+    playerAnim.push(anim);
+    //29
+    //Right Attack 3
+    anim = new Animation(0.1, spriteSheet);
+    anim.set(8,0,490,16,45);
+    playerAnim.push(anim);
+
+    console.log(playerAnim.length);
 }
 loadPlayerAnimations();
 /*-----------------------------------------------------*/
@@ -174,4 +208,11 @@ var shieldImage = new Image;
 shieldImage.src = "../assets/shield.png"
 var shieldAnim = new Animation(0.18,shieldImage);
 shieldAnim.set(4,0,0,30,30);
+
+
+var portalInactive = new Animation(0,spriteSheet);
+portalInactive.set(1,0,732,32,61);
+var portalActive = new Animation(0.1,spriteSheet);
+portalActive.set(5,32,732,32,61);
+
 /*-----------------------------------------------------*/

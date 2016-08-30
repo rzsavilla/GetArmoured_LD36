@@ -129,7 +129,11 @@ function AnimatedSprite() {
     /** Current animation */
     var anim = new Animation();
 
+    this.destroy = false;
+
     var playAnimation = true;
+
+    this.opacity = 1.0;
 
     this.bbLeft = new AABB();
     this.bbRight = new AABB();
@@ -205,6 +209,7 @@ function AnimatedSprite() {
         c.scale(this.getScale().x,this.getScale().y);
         c.rotate(this.getRot() * (Math.PI / 180));      //Apply rotation
         c.translate(-this.getPos().x,-this.getPos().y);
+        c.globalAlpha = this.opacity;
         c.drawImage(
             this.getAnimation().spriteSheet,
             frame.top.x,frame.top.y,
@@ -213,8 +218,8 @@ function AnimatedSprite() {
             this.getPos().y - this.getOrigin().y,
             frame.size.x,frame.size.y
         )
-        if (true) {
-            //this.bb.draw(c);        //Draw box
+        if (false) {
+            this.bb.draw(c);        //Draw box
             this.bbLeft.draw(c);
             this.bbRight.draw(c);
             this.bbTop.draw(c);

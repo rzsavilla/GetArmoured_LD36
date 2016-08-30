@@ -7,6 +7,7 @@ var ctx = canvas.getContext("2d");
 document.body.appendChild(canvas);
 
 var timer = new Timer();
+var updateTimer = new Timer();
 var scene = new Scene();
 scene.initialize();
 
@@ -39,6 +40,7 @@ function loop(){
     //dt = timer.getElapsed() / 1000.0;   //delta time in seconds (variable)
     dt = 1/60; //Fixed
     update(dt);
+    updateTimer.reset();
     render();
     window.requestAnimationFrame(loop);
     timer.reset();
@@ -48,13 +50,11 @@ function loop(){
  * Start Game Loop
  */
 var i = 0;
-/*
 window.onload = function () {
     if(!window.location.hash) {
         window.location = window.location + '#loaded';
         window.location.reload();
     }
 }
-*/
 
 window.requestAnimationFrame(loop);

@@ -44,3 +44,14 @@ function PauseScreen() {
         text.draw(c);
     }
 }
+
+
+function EndScreen() {
+    var text = new Text(canvas.width / 2, canvas.height / 2,"Thanks for Playing","50px Arial");
+    text.colour = "white";
+    this.draw = function(c) {
+        c.fillStyle = "black"
+        c.fillRect(0,0,canvas.width,canvas.height);
+        text.draw(c);
+    }
+}

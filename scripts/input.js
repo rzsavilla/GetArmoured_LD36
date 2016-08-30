@@ -8,6 +8,7 @@ var aKey = false;
 var dKey = false;
 var spaceKey = false;
 var escKey = false;
+var jKey = false;
 
 var key1 = false;
 var key2 = false
@@ -41,10 +42,11 @@ document.addEventListener("keydown",
             spaceKey = down;
         }
         else if (event.keyCode == 49) {     //1
-            key1 = down;
         }
         else if (event.keyCode == 50) {     //2
-            key2 = down;
+        }
+        else if (event.keyCode == 74) {
+
         }
     }
 );
@@ -78,6 +80,9 @@ document.addEventListener("keyup",
         }
         else if (event.keyCode == 50) {     //2
             key2 = down;
+        }
+        else if (event.keyCode == 74) {
+            jKey = down;
         }
     }
 )

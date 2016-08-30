@@ -8,11 +8,9 @@ function platformCollision(entity,platform) {
     if (entity.bbBot.collision(platform.bb)) {
         //entity.setPos(entity.getPos().x,entity.getPos().y);
         entity.applyForce(0, -Math.abs(entity.getVelocity().y) * entity.getMass());
-        if (!entity.isJumping()) {
-            entity.onGround = true;
-        }
+        entity.onGround = true;
     } else {
-        entity.onGround = false;
+        //entity.onGround = false;
         if (entity.bbTop.collision(platform.bb)) {
             entity.setPos(entity.getPos().x,entity.getPos().y+5);
             entity.applyForce(0,Math.abs(entity.getVelocity().y));
@@ -95,6 +93,12 @@ function setMap(t,map) {
                     if (obj.collidable) {
                         map.collidables.push(obj);
                     }
+                } else if (type == "Portal") {
+                    obj = (new Portal(o[j]["x"],o[j]["y"]))
+                    map.portal = (obj);
+                    if (obj.collidable) {
+                        map.collidables.push(obj);
+                    }
                 }
             }
         }
@@ -146,11 +150,61 @@ function collisionCheck(pairs) {
         b2 = pairs[i][1];
         if (b1 instanceof Entity) {
             if (b2 instanceof  Platform) {
+                if (b2.type == "death") {
+                    console.log("DEATH");
+                    if (b1 instanceof Player) {
+                        b1.death = true;
+                    }
+                }
                 platformCollision(b1,b2);
+            } else if (b2 instanceof Enemy) {
+                if (b1 instanceof  Player) {
+                    b1.takeDamage();
+                }
+            } else if (b2 instanceof ShieldPickUp) {
+                if (b1 instanceof  Player) {
+                    if (!b2.collected) {
+                        b1.armourUp();
+                        b2.collected = true;
+                        b2.destroy = true;
+                    }
+                }
+            } else if (b2 instanceof Portal) {
+                if (b1 instanceof Player) {
+                    if (b2.activated) {
+                        nextLevel = true;
+                    }
+                }
             }
         } else if (b2 instanceof Entity) {
             if (b1 instanceof  Platform) {
+                if (b1.type == "death") {
+                    console.log("DEATH");
+                    if (b2 instanceof Player) {
+                        b2.death = true;
+                    }
+                }
                 platformCollision(b2,b1);
+            }  else if (b1 instanceof Enemy) {
+                if (b2 instanceof  Player) {
+                    b2.takeDamage();
+                }
+            }
+            else if (b1 instanceof ShieldPickUp) {
+                if (b2 instanceof Player) {
+                    if (!b1.collected) {
+                        b2.armourUp();
+                        b1.collected = true;
+                        b1.destroy = true;
+                    }
+                }
+            }
+            else if (b1 instanceof Portal) {
+                if (b2 instanceof Player) {
+                    if (b1.activated) {
+                        nextLevel = true;
+                    }
+                }
             }
         }
     }
@@ -168,6 +222,7 @@ function Map() {
     this.enemies = [];
     this.platforms = [];
     this.collidables = [];
+    this.portal = new Portal();
 
     this.detector = new BroadPhase.HashGrid(1024,640,32,32);
     //this.detector = new BroadPhase.HashGrid(1024,640,32,32);
@@ -197,26 +252,40 @@ function Map() {
             }
         }
 
-
         collisionCheck(this.collisions = this.detector.check(this.collidables));
 
         for (var i = 0; i < this.enemies.length;i++) {
             this.enemies[i].update(dt);
         }
+        if (this.player.shoot) {
+            this.player.shoot = false;
+            console.log("Shoot");
+        }
         this.player.update(dt);
+
+        if (this.player.armourLevel == 3) {
+            this.portal.activated = true;
+        }
+
+        for (var i = 0; i < this.pickups.length; i++) {
+
+        }
+        this.portal.update();
     }
 
     this.draw = function(c) {
         for (var i = 0;i <this.layers.length ; i++) {
             this.layers[i].draw(c);
         }
-
         for (var i = 0; i < this.pickups.length; i++) {
-            this.pickups[i].draw(c);
+            if (!this.pickups[i].collected) {
+                this.pickups[i].draw(c);
+            }
         }
         for (var i = 0; i < this.enemies.length;i++) {
             this.enemies[i].draw(c);
         }
+        this.portal.draw(c);
         this.player.draw(c);
     }
 }

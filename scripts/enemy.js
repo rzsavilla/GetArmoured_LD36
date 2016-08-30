@@ -63,7 +63,6 @@ function Blob(x,y) {
     }
 
     this.update = function(dt) {
-
         if (this.isFacing() == "right") {
             if (this.isJumping()) {
                 if (this.getAnimation() != blobAnim[2]) {
@@ -75,12 +74,12 @@ function Blob(x,y) {
             }
 
         } else if (this.isFacing() == "left") {
-            if (!this.isJumping()) {
+            if (this.isJumping()) {
                 if (this.getAnimation() != blobAnim[3]) {
                     this.setAnimation(blobAnim[3]);
                 }
             }
-            if (this.getAnimation() != blobAnim[1]) {
+            else if (this.getAnimation() != blobAnim[1]) {
                 this.setAnimation(blobAnim[1]);
             }
         }

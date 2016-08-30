@@ -96,15 +96,17 @@ function Entity() {
 
     this.updateFrameBB = function() {
         var extent = this.getFrameSize().divide(2,2);
-        var pos = this.getPos();
+        this.setOrigin(extent.x,extent.y);
+        var pos = this.getPos().vSubtract(this.getOrigin());
+
         this.bbTop.setSize(extent.x / 1.2,2);
         this.bbBot.setSize(extent.x / 1.2,2);
         this.bbLeft.setSize(2,extent.y);
         this.bbRight.setSize(2,extent.y);
-        this.bbTop.setPos(pos.x, this.getPos().y - extent.y * 2);
-        this.bbBot.setPos(pos.x,this.getPos().y)
-        this.bbLeft.setPos(pos.x - extent.x - 1,this.getPos().y - extent.y);
-        this.bbRight.setPos(pos.x + extent.x, this.getPos().y - extent.y);
+        this.bbTop.setPos(pos.x + extent.x, this.getPos().y - extent.y);
+        this.bbBot.setPos(pos.x + extent.x,this.getPos().y + extent.y)
+        this.bbLeft.setPos(pos.x - 1,this.getPos().y);
+        this.bbRight.setPos(pos.x + extent.x * 2, this.getPos().y);
         this.bbTop.setOrigin(this.bbTop.getWidth() / 2,this.bbTop.getHeight() / 2);
         this.bbBot.setOrigin(this.bbBot.getWidth() / 2,this.bbBot.getHeight() /  2);
         this.bbLeft.setOrigin(0,this.bbLeft.getHeight() / 2);
@@ -118,6 +120,7 @@ function Entity() {
             bJumping = false;
         }
         if (bJumping){
+            this.onGround = false;
             this.applyForce(0,-(jumpForce / jumpTick) * this.getMass());
             jumpCount++;
             if (jumpCount >= jumpTick) {

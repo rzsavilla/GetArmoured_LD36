@@ -7,10 +7,13 @@
  * Scene
  * @constructor
  */
+
+var nextLevel = false;
 function Scene() {
     var map = new Map();
     var loadingScreen = new LoadingScreen();
     var pauseScreen = new PauseScreen();
+    var endScreen = new EndScreen();
     var level = 1;
     var paused = false;
     var gridLoaded = false;
@@ -23,17 +26,28 @@ function Scene() {
 
     //-----------------------------------
 
-
     this.initialize = function() {
+        nextLevel = false;
         timer.reset();
+        loaded = false;
         gridLoaded = false;
         map = new Map();
         if (level == 1) {
-            loadLevel("../levels/level2.json", map);
+            loadLevel("../levels/level1.json",map);
         }
         else if (level == 2) {
-            loadLevel("../levels/level1.json", map);
+            loadLevel("../levels/level2.json", map);
         }
+        else if (level == 3) {
+            loadLevel("../levels/level3.json", map);
+        }
+        else if (level == 4) {
+            loadLevel("../levels/level4.json", map);
+        }
+        else if (level == 5) {
+
+        }
+
     }
     /**
      * Update scene
@@ -41,7 +55,6 @@ function Scene() {
      */
     this.update = function(dt) {
         if (loaded && timer.getElapsed() / 1000 > 3.0) {
-
             if (escKey) {
                 if (paused) {
                     paused = false;
@@ -69,6 +82,13 @@ function Scene() {
             if (!gridLoaded) {
                 map.detector = new BroadPhase.HashGrid(map.width,map.height,32,32);
                 gridLoaded = true;
+            }
+            if (nextLevel == true || jKey) {
+                level++;
+                this.initialize();
+            }
+            if (map.player.death) {
+                this.initialize();
             }
         }
     }
@@ -102,10 +122,13 @@ function Scene() {
         }
         if (!loaded || timer.getElapsed() / 1000 < 2.0) {
             loadingScreen.draw(c);
-
         }
+
         if (paused) {
             pauseScreen.draw(c);
+        }
+        if (level == 5) {
+            endScreen.draw(c);
         }
     }
 }
