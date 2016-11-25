@@ -12,7 +12,6 @@ AABB.prototype.constructor=AABB;
  * @param {number} height
  * @constructor
  */
-var uniq = 0;
 function AABB(x,y,width,height) {
     Rectangle.call(this);
     this._roId = uniq++;
@@ -288,7 +287,3 @@ function OBB(x,y,width,height) {
         }
     }
 }
-
-/*
- https://github.com/kirbysayshi/broad-phase-bng/blob/master/lib/ro.coltech.spatial-grid.js
- */

@@ -6,7 +6,6 @@
  * Allows object to be transformed
  * @constructor
  */
-
 function Transformable() {
     var pos = new Vector2D(0, 0);
     var origin = new Vector2D(0,0);

@@ -9,9 +9,8 @@ var dKey = false;
 var spaceKey = false;
 var escKey = false;
 var jKey = false;
-
 var key1 = false;
-var key2 = false
+var key2 = false;
 
 /**
  * Key press event
